@@ -1,0 +1,252 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-neon: var(--neon);
+  --color-neon-foreground: var(--neon-foreground);
+  --color-cyan: var(--cyan);
+  --color-warn: var(--warn);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+}
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Neon arcade — dark is the default surface */
+  --background: oklch(0.16 0.014 168);
+  --foreground: oklch(0.95 0.012 165);
+  --card: oklch(0.215 0.018 168);
+  --card-foreground: oklch(0.95 0.012 165);
+  --popover: oklch(0.205 0.018 168);
+  --popover-foreground: oklch(0.95 0.012 165);
+  --primary: oklch(0.82 0.2 158);
+  --primary-foreground: oklch(0.16 0.03 165);
+  --secondary: oklch(0.26 0.02 168);
+  --secondary-foreground: oklch(0.93 0.012 165);
+  --muted: oklch(0.25 0.018 168);
+  --muted-foreground: oklch(0.68 0.02 168);
+  --accent: oklch(0.75 0.15 225);
+  --accent-foreground: oklch(0.16 0.03 220);
+  --destructive: oklch(0.63 0.22 22);
+  --destructive-foreground: oklch(0.98 0.01 0);
+  --border: oklch(0.98 0.02 165 / 12%);
+  --input: oklch(0.98 0.02 165 / 16%);
+  --ring: oklch(0.82 0.2 158 / 60%);
+
+  --neon: oklch(0.82 0.2 158);
+  --neon-foreground: oklch(0.16 0.03 165);
+  --cyan: oklch(0.75 0.15 225);
+  --warn: oklch(0.8 0.16 78);
+  --surface: oklch(0.215 0.018 168);
+  --surface-2: oklch(0.25 0.02 168);
+
+  --chart-1: oklch(0.82 0.2 158);
+  --chart-2: oklch(0.75 0.15 225);
+  --chart-3: oklch(0.8 0.16 78);
+  --chart-4: oklch(0.68 0.18 320);
+  --chart-5: oklch(0.66 0.2 22);
+
+  --sidebar: oklch(0.185 0.016 168);
+  --sidebar-foreground: oklch(0.9 0.012 165);
+  --sidebar-primary: oklch(0.82 0.2 158);
+  --sidebar-primary-foreground: oklch(0.16 0.03 165);
+  --sidebar-accent: oklch(0.25 0.02 168);
+  --sidebar-accent-foreground: oklch(0.95 0.012 165);
+  --sidebar-border: oklch(0.98 0.02 165 / 10%);
+  --sidebar-ring: oklch(0.82 0.2 158 / 60%);
+
+  --gradient-neon: linear-gradient(135deg, var(--neon), var(--cyan));
+  --glow-neon: 0 0 0 1px oklch(0.82 0.2 158 / 25%), 0 12px 40px -12px oklch(0.82 0.2 158 / 45%);
+  --glow-soft: 0 18px 50px -24px oklch(0 0 0 / 80%);
+}
+
+.light {
+  --background: oklch(0.985 0.005 165);
+  --foreground: oklch(0.22 0.02 168);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 168);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 168);
+  --primary: oklch(0.68 0.17 158);
+  --primary-foreground: oklch(0.99 0.01 165);
+  --secondary: oklch(0.95 0.01 168);
+  --secondary-foreground: oklch(0.25 0.02 168);
+  --muted: oklch(0.95 0.01 168);
+  --muted-foreground: oklch(0.48 0.02 168);
+  --accent: oklch(0.66 0.13 225);
+  --accent-foreground: oklch(0.99 0.01 225);
+  --border: oklch(0.22 0.02 168 / 12%);
+  --input: oklch(0.22 0.02 168 / 16%);
+  --neon: oklch(0.68 0.17 158);
+  --cyan: oklch(0.66 0.13 225);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.96 0.01 168);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.22 0.02 168);
+  --sidebar-accent: oklch(0.95 0.01 168);
+  --sidebar-accent-foreground: oklch(0.22 0.02 168);
+  --sidebar-border: oklch(0.22 0.02 168 / 10%);
+  --glow-neon: 0 0 0 1px oklch(0.68 0.17 158 / 25%), 0 12px 30px -16px oklch(0.68 0.17 158 / 40%);
+  --glow-soft: 0 12px 30px -20px oklch(0.22 0.02 168 / 40%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(900px 500px at 12% -10%, oklch(0.82 0.2 158 / 10%), transparent 60%),
+      radial-gradient(800px 500px at 95% 0%, oklch(0.75 0.15 225 / 9%), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility neon-text {
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glow-card {
+  box-shadow: var(--glow-soft);
+  border: 1px solid var(--color-border);
+  background-color: color-mix(in oklab, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+@utility glow-ring {
+  box-shadow: var(--glow-neon);
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(oklch(0.82 0.2 158 / 6%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.2 158 / 6%) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #ticket-print,
+  #ticket-print * {
+    visibility: visible;
+  }
+  #ticket-print {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    color: #000;
+  }
+}
+
+/* --- Support de l'arabe (RTL) --- */
+[dir="rtl"] body,
+[dir="rtl"] {
+  font-family: "Cairo", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+[dir="rtl"] .font-display,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  font-family: "Cairo", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Les valeurs monétaires, horaires et numériques restent lisibles de gauche à droite */
+[dir="rtl"] .tabular-nums,
+[dir="rtl"] .font-mono,
+[dir="rtl"] input[type="date"],
+[dir="rtl"] input[type="number"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="tel"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="number"] {
+  text-align: end;
+}
+
+[dir="rtl"] .recharts-wrapper {
+  direction: ltr;
+}
