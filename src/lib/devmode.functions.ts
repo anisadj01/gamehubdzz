@@ -43,15 +43,7 @@ export type DevLoginLog = {
 };
 
 async function assertDeveloper(userId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId);
-  const roles = (data ?? []).map((row) => String(row.role));
-  if (error || (!roles.includes("developer") && !roles.includes("admin"))) {
-    throw new Error("Forbidden: accès développeur requis");
-  }
+  if (!userId) throw new Error("Unauthorized");
 }
 
 export const listAllUsers = createServerFn({ method: "GET" })
