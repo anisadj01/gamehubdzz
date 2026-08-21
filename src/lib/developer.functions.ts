@@ -21,14 +21,14 @@ export const getDeveloperOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<VenueOverview[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: role, error: roleError } = await supabaseAdmin
+    const { data: roles, error: roleError } = await supabaseAdmin
       .from("user_roles")
       .select("role")
-      .eq("user_id", context.userId)
-      .in("role", ["developer", "admin"])
-      .limit(1)
-      .maybeSingle();
-    if (roleError || !role) throw new Error("Forbidden: accès développeur requis");
+      .eq("user_id", context.userId);
+    const roleNames = (roles ?? []).map((row) => String(row.role));
+    if (roleError || (!roleNames.includes("developer") && !roleNames.includes("admin"))) {
+      throw new Error("Forbidden: accès développeur requis");
+    }
 
     const [venues, profiles, roles, sessions, expenses, stations] = await Promise.all([
       supabaseAdmin.from("venues").select("id, name, owner_id, created_at").order("created_at"),

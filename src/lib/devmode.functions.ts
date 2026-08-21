@@ -47,11 +47,11 @@ async function assertDeveloper(userId: string) {
   const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .in("role", ["developer", "admin"])
-    .limit(1)
-    .maybeSingle();
-  if (error || !data) throw new Error("Forbidden: accès développeur requis");
+    .eq("user_id", userId);
+  const roles = (data ?? []).map((row) => String(row.role));
+  if (error || (!roles.includes("developer") && !roles.includes("admin"))) {
+    throw new Error("Forbidden: accès développeur requis");
+  }
 }
 
 export const listAllUsers = createServerFn({ method: "GET" })

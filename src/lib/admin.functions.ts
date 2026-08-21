@@ -23,10 +23,9 @@ async function assertAdmin(userId: string) {
   const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (error || !data) throw new Error("Forbidden: administrateur requis");
+    .eq("user_id", userId);
+  const roles = (data ?? []).map((row) => String(row.role));
+  if (error || !roles.includes("admin")) throw new Error("Forbidden: administrateur requis");
 }
 
 export const createEmployee = createServerFn({ method: "POST" })
