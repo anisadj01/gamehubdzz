@@ -12,9 +12,8 @@ export const Route = createFileRoute("/_authenticated")({
       .from("user_roles")
       .select("role")
       .eq("user_id", data.user.id);
-    const isDeveloper = (roles ?? []).some((r) => String(r.role) === "developer");
     const onDevPage = location.pathname.startsWith("/developer");
-    if (isDeveloper && !onDevPage) throw redirect({ to: "/developer" });
+    const isDeveloper = (roles ?? []).some((r) => String(r.role) === "developer");
     if (!isDeveloper && onDevPage) throw redirect({ to: "/dashboard" });
 
     return { user: data.user };
