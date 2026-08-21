@@ -42,17 +42,21 @@ export type DevLoginLog = {
   created_at: string;
 };
 
-async function assertDeveloper(supabase: {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-}, userId: string) {
-  const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "developer" });
+async function assertDeveloper(userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "developer")
+    .maybeSingle();
   if (error || !data) throw new Error("Forbidden: accès développeur requis");
 }
 
 export const listAllUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DevUser[]> => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const [{ data: authUsers }, profiles, roles, venues, logs] = await Promise.all([
@@ -99,7 +103,7 @@ export const setUserActive = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ userId: z.string().uuid(), active: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
       ban_duration: data.active ? "none" : "876000h",
@@ -115,7 +119,7 @@ export const resetUserPassword = createServerFn({ method: "POST" })
     z.object({ userId: z.string().uuid(), password: z.string().min(4).max(72) }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
       password: data.password,
@@ -128,7 +132,7 @@ export const deleteAnyUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ userId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     if (data.userId === context.userId) throw new Error("Impossible de supprimer votre propre compte");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
@@ -139,7 +143,7 @@ export const deleteAnyUser = createServerFn({ method: "POST" })
 export const listLoginLogs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DevLoginLog[]> => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("login_logs")
@@ -152,7 +156,7 @@ export const listLoginLogs = createServerFn({ method: "GET" })
 export const listLicenses = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DevLicense[]> => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("licenses")
@@ -180,7 +184,7 @@ export const generateLicense = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const key = makeKey();
     const { data: created, error } = await supabaseAdmin
@@ -215,7 +219,7 @@ export const updateLicense = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     if (data.action === "delete") {
@@ -273,7 +277,7 @@ export const browseTable = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }): Promise<Record<string, string>[]> => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from(data.table)
@@ -454,7 +458,7 @@ export const savePublicConfig = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertDeveloper(context.supabase as never, context.userId);
+    await assertDeveloper(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("settings")
