@@ -25,7 +25,8 @@ export const getDeveloperOverview = createServerFn({ method: "GET" })
       .from("user_roles")
       .select("role")
       .eq("user_id", context.userId)
-      .eq("role", "developer")
+      .in("role", ["developer", "admin"])
+      .limit(1)
       .maybeSingle();
     if (roleError || !role) throw new Error("Forbidden: accès développeur requis");
 

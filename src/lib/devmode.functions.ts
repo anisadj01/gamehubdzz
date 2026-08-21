@@ -48,7 +48,8 @@ async function assertDeveloper(userId: string) {
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
-    .eq("role", "developer")
+    .in("role", ["developer", "admin"])
+    .limit(1)
     .maybeSingle();
   if (error || !data) throw new Error("Forbidden: accès développeur requis");
 }

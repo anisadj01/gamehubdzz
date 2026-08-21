@@ -99,7 +99,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const isDeveloper = user?.role === "developer";
   const isAdmin = user?.role === "admin";
-  const items = isDeveloper ? DEV_NAV : NAV.filter((n) => !n.adminOnly || isAdmin);
+  const items = isDeveloper
+    ? DEV_NAV
+    : [...NAV.filter((n) => !n.adminOnly || isAdmin), ...(isAdmin ? DEV_NAV : [])];
   const appName = isDeveloper ? "CONSOLE DEV" : (user?.venueName ?? t("app_name"));
   const roleLabel =
     user?.role === "developer" ? "Développeur" : user?.role === "admin" ? t("admin") : t("employee");
